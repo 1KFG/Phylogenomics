@@ -1,9 +1,12 @@
 Ortholog identification and Tree building
-
+```
+git clone git@github.com:1KFG/Phylogenomics_HMMs.git
+ln -s Phylogenomics_HMMs HMM
 mkdir search aln
 cd pep
 ls *.fasta > ../list
 cd
+```
 # run once for every genome
 qsub -d `pwd` -t 1-348 jobs/do_hmmsearch.Roz200.sh
 qsub -d `pwd` jobs/make_get_best_hits.Roz200.sh
