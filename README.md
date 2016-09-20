@@ -7,6 +7,7 @@ cd pep
 ls *.fasta > ../list
 cd
 ```
+This is out of date - to fix soon
 ```
 # run once for every genome
 qsub -d `pwd` -t 1-348 jobs/do_hmmsearch.Roz200.sh
