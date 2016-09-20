@@ -1,11 +1,21 @@
 #PBS -l nodes=1:ppn=2 -N hmmsearch -j oe -l walltime=2:00:00
 module load hmmer/3
+
+if [ -f config.txt ]; then
+ source config.txt
+else
+ echo "need config file to set HMM variable"
+ exit
+fi
+
 N=$PBS_ARRAYID
 PEPDIR=pep
-MARKERS=HMM/JGI_1086/markers_3.hmmb
+MARKERS=HMM/$HMM/markers_3.hmmb
 CUTOFF=1e-10
-OUT=search/JGI_1086
+OUT=search/$HMM
 LIST=list # this is the list file
+
+# can pass which file to process on cmdline too, eg bash jobs/01_hmmsearch.sh 1
 if [ ! $N ]; then
   N=$1
 fi
@@ -15,13 +25,18 @@ if [ ! $N ]; then
  exit;
 fi
 
+# number of processors to use set by PBS - can change or set this to a variable
+# in config perhaps ?
 CPU=$PBS_NP
 if [ ! $CPU ]; then
  CPU=1
 fi
 
 mkdir -p $OUT
+# translate the number to a line number in the list of proteomes file to determine what to run
 G=`sed -n ${N}p $LIST`
+
+# convention is they all end in .aa.fasta - change this if not or make a variable
 NM=`basename $G .aa.fasta`
 echo "g=$G"
 
