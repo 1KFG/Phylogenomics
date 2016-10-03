@@ -13,16 +13,23 @@ my @expected;
 my $expected_file;
 my $debug ;
 my $include;
+my $rand_subset;
+my $seed;
 GetOptions('d|dir:s'   => \$dir,
 	   'ext:s'     => \$ext,
 	   'if:s'       => \$iformat,
 	   'of:s'       => \$oformat,
 	   'expected:s' => \$expected_file,
 	   'o|out:s'   => \$outfile,
-	   'v|debug!' => \$debug,
+	   'v|debug!'  => \$debug,
   	   'include:s' => \$include,
+	   'seed:i'    => \$seed,
+	   'rand:i'    => \$rand_subset,
 	   );
 
+if ($seed) { 
+    srand($seed);
+}
 
 die("need a dir") unless $dir && -d $dir;
 
@@ -46,21 +53,35 @@ if( $include ) {
 my (%matrix);
 my @part;
 my $last = 1;
+my @files;
 for my $file (sort readdir(DIR) ) {
     next if $file eq $outfile;
     warn("file is $file\n") if $debug;
     next unless ($file =~ /(\S+)\.\Q$ext\E$/);
     my $stem = $1;
     if( $include ) {	
-#	warn "checking if $stem is in the allowed set\n";
+	warn "checking if $stem is in the allowed set\n";
          # skip if we aren't in the allowed list (when this is specified)
 	next unless $allowed{$stem};
 	warn("$stem is allowed inclusion\n") if $debug;
+	push @files, [ $stem, "$dir/$file"];
+    } else {
+	push @files, [ $stem, "$dir/$file"]; # always push if no include file
     }
+}
+if( $rand_subset ) {
+    my @tfiles = @files;
+    @files = ();
+    while ((scalar @files) < $rand_subset && @tfiles ) {
+	push @files, $tfiles[rand(scalar @tfiles)];
+    }
+}
+for my $f ( @files ) {
+    my ($stem,$fullfile) = @$f; 
     my $in = Bio::AlignIO->new(-format => $iformat, -alphabet => 'protein',
-			       -file   => "$dir/$file");
+			       -file   => $fullfile);
     my ($fbase) = $stem;
-    warn($file,"\n") if $debug;
+    warn($fullfile,"\n") if $debug;
     if( my $aln = $in->next_aln ) {
         my $now = $last + $aln->length - 1;
         push @part, "$fbase = $last-$now;";
@@ -71,7 +92,7 @@ for my $file (sort readdir(DIR) ) {
 	    if( $seq->length == 0 ) {
 		warn("no length for seq ", $id,"\n");
 	    }
-		warn("id is $id\n") if $debug;
+	    warn("id is $id\n") if $debug;
 	    if( $id =~ /([^\|]+)\|/) { 
 		$id = $1;
 	    }
