@@ -3,6 +3,7 @@ module load RAxML
 
 CPU=2
 
+RUNFOLDER=phylo
 if [ $PBS_NUM_PPN ]; then
  CPU=$PBS_NUM_PPN
 fi
@@ -14,14 +15,14 @@ else
  OUT=Pult
  EXTRARAXML=
 fi
-
+mkdir -p $RUNFOLDER
 count=`wc -l expected | awk '{print $1}'`
 datestr=`date +%Y_%b_%d`
 str=$PREFIX.$datestr".JGI1086".${count}sp
 IN=all_${count}.JGI_1086
 if [ ! -f phylo/$str.fasaln ]; then
- cp $IN.fasaln phylo/$str.fasaln
- cp $IN.partitions.txt phylo/$str.partitions
+ cp $IN.fasaln $RUNFOLDER/$str.fasaln
+ cp $IN.partitions.txt $RUNFOLDER/$str.partitions
 fi
 cd phylo
 PREFIX=Standard.$str
