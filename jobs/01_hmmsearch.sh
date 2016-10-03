@@ -8,6 +8,10 @@ else
  exit
 fi
 
+if [ ! $HMM ]; then
+ echo "need to a config file to set the HMM folder name"
+fi
+
 N=$PBS_ARRAYID
 PEPDIR=pep
 MARKERS=HMM/$HMM/markers_3.hmmb
@@ -40,6 +44,8 @@ G=`sed -n ${N}p $LIST`
 NM=`basename $G .aa.fasta`
 echo "g=$G"
 
-if [ ! -f "$OUT/$NM.domtbl" ]; then
+if [ ! -f "$OUT/$NM.domtbl" -a ! -f "$OUT/$NM.domtbl.gz" ]; then
  hmmsearch --cpu $CPU -E $CUTOFF --domtblout $OUT/$NM.domtbl $MARKERS $PEPDIR/$G >& $OUT/$NM.log
+else
+ echo "skipping $NM - has already run"
 fi
