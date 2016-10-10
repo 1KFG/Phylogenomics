@@ -44,7 +44,7 @@ G=`sed -n ${N}p $LIST`
 NM=`basename $G .aa.fasta`
 echo "g=$G"
 
-if [ ! -f "$OUT/$NM.domtbl" -a ! -f "$OUT/$NM.domtbl.gz" ]; then
+if [[ ! -f "$OUT/$NM.domtbl" || $PEPDIR/$G -nt $OUT/$NM.domtbl ]]; then
  hmmsearch --cpu $CPU -E $CUTOFF --domtblout $OUT/$NM.domtbl $MARKERS $PEPDIR/$G >& $OUT/$NM.log
 else
  echo "skipping $NM - has already run"
