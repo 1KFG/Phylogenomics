@@ -1,9 +1,20 @@
-#PBS -N makeUaln.JGI_1086 -j oe -l walltime=8:00:00,mem=4gb
+#!/usr/bin/bash
+
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --job-name=makeUnaln.JGI_1086
+#SBATCH --time=8:00:00
+#SBATCH --mem-per=cpu=4G
+
 # DO NOT RUN WITH ARRAYJOBS
-module load perl
 module load cdbfasta
 module load hmmer
-MARKER=JGI_1086
+
+MARKER=$HMM
+if [ ! $MARKER ]; then
+ echo "need a marker defined in the HMM filed in config.txt"
+ exit
+fi
 ALN=aln
 SEARCH=search
 mkdir -p $ALN/$MARKER
