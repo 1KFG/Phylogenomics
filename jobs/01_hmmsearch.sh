@@ -1,4 +1,11 @@
-#PBS -l nodes=1:ppn=2 -N hmmsearch -j oe -l walltime=2:00:00
+#!/usr/bin/bash
+#SBATCH --nodes=1
+#SBATCH --ntasks=2
+#SBATCH -p batch
+#SBATCH --mem-per-cpu=1G
+#SBATCH --job-name=hmmsearch
+#SBATCH --time=2:00:00
+
 module load hmmer/3
 
 if [ -f config.txt ]; then
@@ -12,7 +19,7 @@ if [ ! $HMM ]; then
  echo "need to a config file to set the HMM folder name"
 fi
 
-N=$PBS_ARRAYID
+N=$SLURM_ARRAY_TASK_ID
 PEPDIR=pep
 MARKERS=HMM/$HMM/markers_3.hmmb
 CUTOFF=1e-10
@@ -31,7 +38,7 @@ fi
 
 # number of processors to use set by PBS - can change or set this to a variable
 # in config perhaps ?
-CPU=$PBS_NP
+CPU=$SLURM_CPUS_ON_NODE
 if [ ! $CPU ]; then
  CPU=1
 fi
