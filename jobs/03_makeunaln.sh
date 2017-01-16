@@ -9,12 +9,18 @@
 # DO NOT RUN WITH ARRAYJOBS
 module load cdbfasta
 module load hmmer
-
-MARKER=$HMM
-if [ ! $MARKER ]; then
- echo "need a marker defined in the HMM filed in config.txt"
+if [ -f config.txt ]; then
+ source config.txt
+else
+ echo "need config file to set HMM variable"
  exit
 fi
+
+if [ ! $HMM ]; then
+ echo "need to a config file to set the HMM folder name"
+fi
+
+MARKER=$HMM
 ALN=aln
 SEARCH=search
 mkdir -p $ALN/$MARKER
