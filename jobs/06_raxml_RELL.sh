@@ -16,6 +16,7 @@ count=`wc -l expected | awk '{print $1}'`
 datestr=`date +%Y_%b_%d`
 str=$PREFIX.$datestr".JGI1086".${count}sp
 IN=all_${count}.JGI_1086
+mkdir -p phylo
 if [ ! -f phylo/$str.fasaln ]; then
  cp $IN.fasaln phylo/$str.fasaln
  cp $IN.partitions.txt phylo/$str.partitions
