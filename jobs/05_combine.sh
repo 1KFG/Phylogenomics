@@ -1,11 +1,30 @@
-#PBS -l nodes=1:ppn=1,mem=8gb,walltime=3:00:00 -j oe -N combineAll
+#!/usr/bin/bash
+
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --mem-per-cpu=8G
+#SBATCH --time=2:00:00
+#SBATCH --job-name=combineThemAll
+
 module load RAxML
 
 if [ ! -f expected ]; then
  bash jobs/make_expected_file.sh
 fi
 EXPECTEDNAMES=expected
-MARKERS=JGI_1086
+
+if [ -f config.txt ]; then
+ source config.txt
+else
+ echo "need config file to set HMM variable"
+ exit
+fi
+
+if [ ! $HMM ]; then
+ echo "need to a config file to set the HMM folder name"
+fi
+
+MARKERS=$HMM
 ALN=aln
 count=$(wc -l $EXPECTEDNAMES | awk '{print $1}')
 #echo "count is $count"
