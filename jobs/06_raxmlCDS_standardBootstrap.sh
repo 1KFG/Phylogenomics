@@ -1,23 +1,52 @@
-#PBS -l nodes=1:ppn=32,mem=64gb -q highmem -N raxmlCDS -j oe
+#!/usr/bin/bash
+
+#SBATCH --nodes=1
+#SBATCH --ntasks=32
+#SBATCH --mem-per-cpu=3G
+#SBATCH --time=7-0:00:00
+#SBATCH --job-name=raxmlCDS
+
 module load RAxML
 
-CPU=2
-
-if [ $PBS_NUM_PPN ]; then
- CPU=$PBS_NUM_PPN
+if [ ! -f expected ]; then
+ bash jobs/make_expected_file.sh
 fi
+EXPECTEDNAMES=expected
+
 if [ -f config.txt ]; then
  source config.txt
 else
- PREFIX=ALL
- FINALPREF=1KFG
- OUT=Pult
+ echo "need config file to set these needed variables :  PREFIX, FINALPREF, OUT"
+ exit
+fi
+
+if [ ! $HMM ]; then
+ echo "need to a config file to set the HMM folder name"
+fi
+
+if [ ! $OUT ]; then
+ echo "Need an 'OUT' variable set"
+ exit
+fi
+
+if [ ! $PREFIX ]; then
+ echo "need a PREFIX variable set"
+ exit
+fi
+
+if [ ! $FINALPREF ]; then
+ FINALPREF=$PREFIX
+fi
+
+CPU=$SLURM_CPUS_ON_NODE
+if [ ! $CPUS ]; then
+ CPU=4
 fi
 
 count=`wc -l expected | awk '{print $1}'`
 datestr=`date +%Y_%b_%d`
-str=$PREFIX.$datestr".JGI1086".${count}sp.CDS
-IN=all_${count}.JGI_1086
+str=$PREFIX.$datestr.$HMM.${count}sp.CDS
+IN=all_${count}.$HMM
 if [ ! -f phylo/$str.fasaln ]; then
  cp $IN.cds.fasaln phylo/$str.fasaln
  cp $IN.cds.partitions.txt phylo/$str.partitions
