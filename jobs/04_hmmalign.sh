@@ -3,7 +3,19 @@ module load trimal
 module load hmmer/3
 module load java
 module load BMGE
-MARKER=JGI_1086
+
+if [ -f config.txt ]; then
+ source config.txt
+else
+ echo "need config file to set HMM variable"
+ exit
+fi
+
+if [ ! $HMM ]; then
+ echo "need to a config file to set the HMM folder name"
+fi
+
+MARKER=$HMM
 DBDIR=HMM/$MARKER/HMM3
 DIR=aln/$MARKER
 LIST=alnlist.$MARKER # this is the list file
@@ -12,7 +24,7 @@ if [ ! -f $LIST ]; then
  ls *.aa.fasta > ../../$LIST
  popd
 fi
-N=$PBS_ARRAYID
+N=$SLURM_ARRAY_TASK_ID
 if [ ! $N ]; then
   N=$1
 fi
