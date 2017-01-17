@@ -42,16 +42,17 @@ CPU=$SLURM_CPUS_ON_NODE
 if [ ! $CPUS ]; then
  CPU=4
 fi
-
+RUNFOLDER=phylo
+mkdir -p $RUNFOLDER
 count=`wc -l expected | awk '{print $1}'`
 datestr=`date +%Y_%b_%d`
 str=$PREFIX.$datestr.$HMM.${count}sp.CDS
 IN=all_${count}.$HMM
-if [ ! -f phylo/$str.fasaln ]; then
- cp $IN.cds.fasaln phylo/$str.fasaln
- cp $IN.cds.partitions.txt phylo/$str.partitions
+if [ ! -f $RUNFOLDER/$str.fasaln ]; then
+ cp $IN.cds.fasaln $RUNFOLDER/$str.fasaln
+ cp $IN.cds.partitions.txt $RUNFOLDER/$str.partitions
 fi
-cd phylo
+cd $RUNFOLDER
 PREFIX=Standard.$str
 raxmlHPC-PTHREADS-AVX -T $CPU -f a -x 227 -p 771 -o $OUT -m GTRGAMMA \
   -s $str.fasaln -n $PREFIX -N autoMRE 
