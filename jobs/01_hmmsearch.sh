@@ -5,6 +5,7 @@
 #SBATCH --mem-per-cpu=1G
 #SBATCH --job-name=hmmsearch
 #SBATCH --time=2:00:00
+#SBATCH --output=hmmsearch.%A_%a.out
 
 module load hmmer/3
 

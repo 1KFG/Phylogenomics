@@ -1,10 +1,39 @@
-#PBS -l nodes=1:ppn=1 -N MSA -j oe -l walltime=3:00:00
+#!/usr/bin/bash
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --job-name=hmmalign
+#SBATCH --time=3:00:00
+#SBATCH --mem-per-cpu=2G
+#SBATCH --output=MSA.%A_%a.out
+#SBATCH -p batch
+
+module load trimal
 module load muscle
 module load BMGE
 module load java
-F=$PBS_ARRAYID
-DIR=aln/JGI_1086
-LIST=alnlist.JGI_1086 # this is the list file
+N=$SLURM_ARRAY_TASK_ID
+if [ ! $N ]; then
+  N=$1
+fi
+
+if [ ! $N ]; then
+ echo "need to have a job id"
+ exit;
+fi
+
+if [ -f config.txt ]; then
+ source config.txt
+else
+ echo "need config file to set HMM variable"
+ exit
+fi
+
+if [ ! $HMM ]; then
+ echo "need to a config file to set the HMM folder name"
+fi
+
+DIR=aln/$HMM
+LIST=alnlist.$HMM # this is the list file
 N=$PBS_ARRAYID
 if [ ! $N ]; then
   N=$1
@@ -16,13 +45,6 @@ if [ ! $N ]; then
 fi
 
 G=$(sed -n ${N}p $LIST)
-base=$(basename $G .aa.fasta)
-echo "marker is $base for gene $G $N from $LIST"
-
-CPU=1
-if [ $PBS_NUM_PPN ]; then
- CPU=$PBS_NUM_PPN
-fi
 
 if [ ! -f $DIR/$base.denovo.aln ]; then
  muscle -in $DIR/$G -out $DIR/$base.denovo.aln -quiet

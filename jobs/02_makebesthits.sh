@@ -3,6 +3,7 @@
 #SBATCH --ntasks=1
 #SBATCH --job-name=besthit
 #SBATCH --time=0:30:00
+#SBATCH --output=makebest.%A.out
 
 DIR=search/JGI_1086
 EXT=domtbl

@@ -4,7 +4,8 @@
 #SBATCH --ntasks=1
 #SBATCH --job-name=makeUnaln.JGI_1086
 #SBATCH --time=8:00:00
-#SBATCH --mem-per=cpu=4G
+#SBATCH --mem-per-cpu=4G
+#SBATCH --output=makeunaln.%A.out
 
 # DO NOT RUN WITH ARRAYJOBS
 module load cdbfasta

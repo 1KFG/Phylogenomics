@@ -4,7 +4,7 @@
 #SBATCH --job-name=hmmalign
 #SBATCH --time=3:00:00
 #SBATCH --mem-per-cpu=3G
-
+#SBATCH --output=hmmalign.%A_%a.out
 module load trimal
 module load hmmer/3
 module load java
