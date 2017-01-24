@@ -8,10 +8,17 @@
 DIR=search/JGI_1086
 EXT=domtbl
 
+if [ -f config.txt ]; then
+ source config.txt
+else
+ echo "need config file to set HMM variable"
+ exit
+fi
+
 for file in $DIR/*.$EXT
 do
  stem=`basename $file .domtbl`
  if [ ! -f $DIR/$stem.best ]; then
-  perl scripts/get_best_hmmtbl.pl -c 1e-20 $file > $DIR/$stem.best
+  perl scripts/get_best_hmmtbl.pl -c $CUTOFF $file > $DIR/$stem.best
  fi
 done
