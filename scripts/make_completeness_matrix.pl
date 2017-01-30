@@ -34,7 +34,7 @@ for my $file (sort readdir(DIR) ) {
 		$stats{$stem}->{trimpid} = $1;
 	    }
 	}
-	open(my $fh => "grep \"^>\" $aa_aln_dir/$stem.fa |") || die $!;
+	open(my $fh => "grep \"^>\" $aa_aln_dir/$stem.aa.fasta |") || die $!;
 	my %seen;
 	while(<$fh>) {
 	    if (/^>(\S+)/ ) {
