@@ -24,25 +24,10 @@ else
  EXTRARAXML=
 fi
 
-module load RAxML
-
-CPU=2
-
-if [ $PBS_NUM_PPN ]; then
- CPU=$PBS_NUM_PPN
-fi
-if [ -f config.txt ]; then
- source config.txt
-else
- PREFIX=ALL
- FINALPREF=1KFG
- OUT=Pult
-fi
 count=`wc -l expected | awk '{print $1}'`
 datestr=`date +%Y_%b_%d`
 str=$datestr".denovo.JGI1086".${count}sp
 IN=all_${count}.denovo.$HMM
-PREFIX=$PREFIX.$str
 if [ ! -f phylo/$str.fasaln ]; then
  cp $IN.fasaln phylo/$str.fasaln
  cp $IN.partitions.txt phylo/$str.partitions
@@ -50,4 +35,4 @@ if [ ! -f phylo/$str.fasaln ]; then
 fi
 cd phylo
 
-raxmlHPC-PTHREADS-AVX -T $CPU -f a -x 227 -p 771 -o $OUT -m PROTGAMMAAUTO -s $str.fasaln -n $PREFIX -N autoMRE
+raxmlHPC-PTHREADS-AVX -T $CPU -f a -x 227 -p 771 -o $OUT -m PROTGAMMAAUTO -s $str.fasaln -n $PREFIX.$str -N autoMRE

@@ -1,27 +1,48 @@
-#PBS -l nodes=1:ppn=8,walltime=64:00:00,mem=16gb -N raxmlGeneTree -j oe
+#!/usr/bin/bash
+#SBATCH --nodes=1
+#SBATCH --ntasks=8
+#SBATCH --job-name=geneTreeraxmlAVX
+#SBATCH --time=7-0:00:00
+#SBATCH --mem-per-cpu=3G
+#SBATCH --output=genetree.%A_%a.out
+
 module load RAxML
-raxml=raxmlHPC-PTHREADS-AVX
-OUTGROUP=Rall
+
 CPU=2
-F=$PBS_ARRAYID
-if [ $PBS_NUM_PPN ]; then
- CPU=$PBS_NUM_PPN
+
+RUNFOLDER=phylo
+if [ $SLURM_CPUS_ON_NODE ]; then
+ CPU=$SLURM_CPUS_ON_NODE
 fi
-OUTDIR=gene_trees
-ALNDIR=aln/JGI_1086
+
+if [ -f config.txt ]; then
+ source config.txt
+else
+ PREFIX=ALL
+ FINALPREF=1KFG
+ OUT=Pult
+ EXTRARAXML=
+fi
+OUTDIR=$GENETREES
+if [ ! $OUTDIR ]; then
+ OUTDIR=gene_trees
+fi
+type=denovo
+raxml=raxmlHPC-PTHREADS-AVX
+ALNDIR=aln/$HMM
 GENOMELIST=aln_stats.tab
 if [ ! -f $GENOMELIST ]; then
  echo "need target list already selected"
- perl scripts/make_completeness_matrix.pl expected aln/JGI_1086 aln/JGI_1086
+ perl scripts/make_completeness_matrix.pl expected aln/$HMM aln/$HMM
  exit;
 fi
-
+F=$SLURM_ARRAY_TASK_ID
 if [ ! $F ]; then
  F=$1
 fi
 
 if [ ! $F ]; then
- echo "no PBS_ARRAYID or input"
+ echo "no SLURM ARRAY or input"
  exit
 fi
 F=$(expr $F + 1)
@@ -31,11 +52,17 @@ if [ ! $FILE ]; then
  exit
 fi
 base=$FILE
-PHY=$ALNDIR/${base}.msa.trim
+PHY=$ALNDIR/${base}.$type.trim
 OUTPHY=${base}.phy
-perl -p -e 's/>([^\|]+)\|/>$1 /' $PHY > $OUTDIR/$OUTPHY
+perl -p -e 's/>([^\|]+)\|(\S+)/>$1/' $PHY > $OUTDIR/$OUTPHY
 cd $OUTDIR
 echo $base
-if [ ! -f  RAxML_info.$base"_ML_PROTGAMMA" ]; then
- $raxml -T $CPU -o $OUTGROUP -N autoMRE -x 221 -f a -p 31 -m PROTGAMMAAUTO -s $OUTPHY -n ${base}"_ML_PROTGAMMA"
+if [ ! -f  RAxML_info.${base}_ML_PROTGAMMA_RELL ]; then
+ #$raxml -T $CPU -o $OUTGROUP -N autoMRE -x 221 -f a -p 31 -m PROTGAMMAAUTO -s $OUTPHY -n ${base}"_ML_PROTGAMMA"
+ $raxml -T $CPU -f D -p 771 -m PROTGAMMAAUTO -s $OUTPHY -n ${base}_ML_PROTGAMMA_RELL
 fi
+
+if [ ! -f RAxML_info.${base}_ML_PROTGAMMA_RELL_BS ]; then
+ raxmlHPC-AVX -f b -m PROTGAMMALG -t RAxML_bestTree.${base}_ML_PROTGAMMA_BS -z RAxML_rellBootstrap.${base} -n ${base}_BS
+fi
+
