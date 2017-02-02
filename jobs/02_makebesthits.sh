@@ -5,7 +5,17 @@
 #SBATCH --time=0:30:00
 #SBATCH --output=makebest.%A.out
 
-DIR=search/JGI_1086
+if [ -f config.txt ]; then
+ source config.txt
+else
+ echo "need config file to set HMM variable"
+ exit
+fi
+
+if [ ! $HMM ]; then
+ echo "need to a config file to set the HMM folder name"
+fi
+DIR=search/$HMM
 EXT=domtbl
 
 if [ -f config.txt ]; then
