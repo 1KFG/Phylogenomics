@@ -4,7 +4,7 @@
 #SBATCH --job-name=raxmlAVX
 #SBATCH --time=7-0:00:00
 #SBATCH --mem-per-cpu=3G
-#SBATCH --output=raxmlAVX.%A_%a.out
+#SBATCH --output=raxmlAVXStandard.%A.out
 
 module load RAxML
 
