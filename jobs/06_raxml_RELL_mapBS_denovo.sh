@@ -1,4 +1,7 @@
-#PBS -l nodes=1:ppn=1 -N raxmlRELL.BS -j oe
+#!/usr/bin/bash
+#SBATCH --nodes 1
+#SBATCH --ntasks 1
+#SBATCH --time=1:00:00
 module load RAxML
 
 CPU=1
@@ -13,8 +16,8 @@ count=`wc -l expected | awk '{print $1}'`
 datestr=`date +%Y_%b_%d`
 str=${PREFIX}.${datestr}.denovo.${HMM}.${count}sp
 IN=all_${count}.denovo.${HMM}
-FINALPREF=$str
+FINALPREF=${str}_RELL
 
 cd phylo
-raxmlHPC-AVX -f b -m PROTGAMMALG -t RAxML_bestTree.RELL.${FINALPREF} \
- -z RAxML_rellBootstrap.RELL.${FINALPREF} -n ${FINALPREF}_RELL_BS
+raxmlHPC-AVX -f b -m PROTGAMMALG -t RAxML_bestTree.${FINALPREF} \
+ -z RAxML_rellBootstrap.${FINALPREF} -n ${FINALPREF}_BS
