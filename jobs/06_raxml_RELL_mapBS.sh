@@ -11,10 +11,10 @@ else
 fi
 count=`wc -l expected | awk '{print $1}'`
 datestr=`date +%Y_%b_%d`
-# need to change prefix at some point based on a config file
-datestr=`date +%Y_%b_%d`
-str=$PREFIX.$datestr".JGI1086".${count}sp
-IN=all_${count}.JGI_1086
+str=${PREFIX}.${datestr}.${HMM}.${count}sp
+IN=all_${count}.${HMM}
+FINALPREF=$str
+
 cd phylo
-raxmlHPC-AVX -f b -m PROTGAMMALG -t RAxML_bestTree.$PREFIX.$str \
- -z RAxML_rellBootstrap.$PREFIX.$str -n $PREFIX.${str}_BS
+raxmlHPC-AVX -f b -m PROTGAMMALG -t RAxML_bestTree.RELL.${FINALPREF} \
+ -z RAxML_rellBootstrap.RELL.${FINALPREF} -n ${FINALPREF}_RELL_BS
