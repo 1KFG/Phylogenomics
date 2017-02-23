@@ -5,6 +5,7 @@
 #SBATCH --mem-per-cpu=3G
 #SBATCH --time=7-0:00:00
 #SBATCH --job-name=raxmlCDS
+#SBATCH --output=raxmlCDS.%A.log
 
 module load RAxML
 
@@ -47,10 +48,10 @@ mkdir -p $RUNFOLDER
 count=`wc -l expected | awk '{print $1}'`
 datestr=`date +%Y_%b_%d`
 str=$PREFIX.$datestr.$HMM.${count}sp.CDS
-IN=all_${count}.$HMM
+IN=all_${count}.${HMM}.denovocds
 if [ ! -f $RUNFOLDER/$str.fasaln ]; then
- cp $IN.cds.fasaln $RUNFOLDER/$str.fasaln
- cp $IN.cds.partitions.txt $RUNFOLDER/$str.partitions
+ cp $IN.fasaln $RUNFOLDER/$str.fasaln
+ cp $IN.partitions.txt $RUNFOLDER/$str.partitions
 fi
 cd $RUNFOLDER
 PREFIX=Standard.$str
