@@ -14,6 +14,7 @@ if [ ! -f expected ]; then
 fi
 EXPECTEDNAMES=expected
 
+
 if [ -f config.txt ]; then
  source config.txt
 else
@@ -49,7 +50,7 @@ mkdir -p $RUNFOLDER
 count=`wc -l expected | awk '{print $1}'`
 datestr=`date +%Y_%b_%d`
 str=$PREFIX.$datestr.$HMM.${count}sp.CDS
-IN=all_${count}.${HMM}.cds
+IN=all_${count}.${HMM}.denovocds
 if [ ! -f $RUNFOLDER/$str.fasaln ]; then
  cp $IN.fasaln $RUNFOLDER/$str.fasaln
  cp $IN.partitions.txt $RUNFOLDER/$str.partitions
