@@ -53,5 +53,6 @@ if [ -f $DIR/$base.cds.fasta ]; then
  if [ ! -f $DIR/$base.denovo_cdsaln.trim ]; then
   bp_mrtrans.pl -if fasta -of fasta -i $DIR/$base.denovo.aln -s $DIR/$base.cds.fasta -o $DIR/$base.denovo.cdsaln
   java -jar $BMGE -t CODON -i $DIR/$base.denovo.cdsaln -of $DIR/$base.denovo_cdsaln.trim 
- fi
+  python scripts/CodonTrim.py $DIR/$base.denovo_cdsaln.trim $DIR/$base.denovo_cdsaln.trim.clean
+fi
 fi
