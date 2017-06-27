@@ -34,6 +34,6 @@ convertFasta2Phylip.sh all_${count}.${MARKERS}.fasaln > all_${count}.${MARKERS}.
 
 ctCDS=$(ls $ALN/$MARKERS/*.cdsaln.trim | wc -l | awk '{print $1}')
 if [ $ctCDS -gt 0 ]; then
-perl scripts/combine_fasaln.pl -o all_${count}.${MARKERS}.cds.fasaln -ext cdsaln.trim -if fasta -of fasta -d $ALN/$MARKERS -expected $EXPECTEDNAMES > all_${count}.${MARKERS}.cds.partitions.txt
+perl scripts/combine_fasaln.pl -o all_${count}.${MARKERS}.cds.fasaln -ext cdsaln.trim.clean -if fasta -of fasta -d $ALN/$MARKERS -expected $EXPECTEDNAMES > all_${count}.${MARKERS}.cds.partitions.txt
 convertFasta2Phylip.sh all_${count}.${MARKERS}.cds.fasaln > all_${count}.${MARKERS}.cds.phy
 fi

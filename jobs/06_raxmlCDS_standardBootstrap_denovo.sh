@@ -2,10 +2,10 @@
 
 #SBATCH --nodes=1
 #SBATCH --ntasks=32
-#SBATCH --mem-per-cpu=2G
+#SBATCH --mem-per-cpu=3G
 #SBATCH --time=2-0:00:00
-#SBATCH --job-name=raxmlCDS
-#SBATCH --output=raxmlCDS.%A.log
+#SBATCH --job-name=raxmlCDS.denovo
+#SBATCH --output=raxmlCDSdenovo.%A.log
 
 module load RAxML
 
