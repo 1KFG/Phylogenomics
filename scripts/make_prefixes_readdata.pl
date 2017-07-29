@@ -1,6 +1,6 @@
 #!env perl
 use strict;
-my $dir= shift || "final_combine/pep";
+my $dir= shift || "pep";
 opendir(DIR, $dir) || die "dir is $dir: $!";
 print join ("\t", qw(Pref Name)),"\n";
 for my $file ( sort readdir(DIR) ) {
