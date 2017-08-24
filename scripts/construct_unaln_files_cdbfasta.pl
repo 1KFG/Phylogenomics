@@ -22,7 +22,7 @@ GetOptions(
     );
 $idxfile = File::Spec->catfile($dbdir,$idxfile);
 if( ! -f $idxfile ) {
- `cat $dbdir/*.$ext | esl-reformat fasta - > $idxfile`;
+ `cat $dbdir/*.$ext | perl -p -e 'if( /^>/ ) { s/>(\\S+).+/>\$1/' } else { s/\*//g }' | esl-reformat fasta - > $idxfile`;
  `cdbfasta $idxfile`;
 }
 
