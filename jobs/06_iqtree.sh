@@ -30,8 +30,8 @@ fi
 
 count=`wc -l expected | awk '{print $1}'`
 datestr=`date +%Y_%b_%d`
-str=$datestr.denovo.$HMM.${count}sp
-IN=all_${count}.denovo.$HMM
+str=$datestr.$HMM.${count}sp
+IN=all_${count}.$HMM
 if [ ! -f phylo/$str.fasaln ]; then
  cp $IN.fasaln phylo/$str.fasaln
  cp $IN.partitions.txt phylo/$str.partitions
