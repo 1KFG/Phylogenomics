@@ -34,5 +34,6 @@ if [ ! -f phylo/$str.fasaln ]; then
  cp $IN.phy phylo/$str.phy
 fi
 cd phylo
+#raxmlHPC-PTHREADS-AVX -T $CPU -f a -x 227 -p 771 -o $OUT -m PROTGAMMAAUTO -s $str.fasaln -n $PREFIX.$str -N autoMRE
+raxmlHPC-PTHREADS-AVX -T $CPU -f a -x 227 -p 771 -o $OUT -m PROTGAMMALG -s $str.fasaln -n $PREFIX.$str -N autoMRE
 
-raxmlHPC-PTHREADS-AVX -T $CPU -f a -x 227 -p 771 -o $OUT -m PROTGAMMAAUTO -s $str.fasaln -n $PREFIX.$str -N autoMRE
