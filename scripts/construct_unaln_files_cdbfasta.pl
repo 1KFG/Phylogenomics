@@ -53,18 +53,19 @@ for my $gene ( keys %by_gene ) {
     close(CDBYANK);
     my $nct = `grep -c '^>' $outdir/$gene.$ext`;
     if( $nct != $expected ) { 
+     warn("num seqs is $nct while expected $expected for $gene.$ext\n");
      my $seqcheck = Bio::SeqIO->new(-format => 'fasta', -file => "$outdir/$gene.$ext");
      my %seen;
      while (my $s = $seqcheck->next_seq ) {
       $seen{$s->display_id}++; 
-      warn("storing ",$s->display_id,"\n");
+      warn("stored ",$s->display_id,"\n");
      }
      for my $sp ( keys %{$by_gene{$gene}} ) {
-      my $name = $by_gene{$gene}->{$sp};
-      if( ! exists $seen{$name} ) {	
-	warn("cannot find '$name' in $gene file\n");
-	}
+       my $name = $by_gene{$gene}->{$sp};
+         if( ! exists $seen{$name} ) {	
+  	  warn("cannot find '$name' in $gene file\n");
+	 }
     }
-	exit;
+#	exit;
     }
 }

@@ -1,10 +1,10 @@
 #!/usr/bin/bash
 #SBATCH --nodes=1
 #SBATCH --ntasks=32
-#SBATCH --job-name=raxmlAVX
+#SBATCH --job-name=raxml.BKL
 #SBATCH --time=7-0:00:00
-#SBATCH --mem-per-cpu=3G
-#SBATCH --output=raxmlAVX.%A_%a.out
+#SBATCH --mem-per-cpu=4G
+#SBATCH --output=raxmlBKL.%A_%a.out
 
 module load RAxML
 
@@ -26,7 +26,7 @@ fi
 
 count=`wc -l expected | awk '{print $1}'`
 datestr=`date +%Y_%b_%d`
-str=$datestr".denovo.JGI1086".${count}sp
+str=$datestr.denovo.$HMM.${count}sp
 IN=all_${count}.denovo.$HMM
 if [ ! -f phylo/$str.fasaln ]; then
  cp $IN.fasaln phylo/$str.fasaln
@@ -34,6 +34,5 @@ if [ ! -f phylo/$str.fasaln ]; then
  cp $IN.phy phylo/$str.phy
 fi
 cd phylo
-#raxmlHPC-PTHREADS-AVX -T $CPU -f a -x 227 -p 771 -o $OUT -m PROTGAMMAAUTO -s $str.fasaln -n $PREFIX.$str -N autoMRE
-raxmlHPC-PTHREADS-AVX -T $CPU -f a -x 227 -p 771 -o $OUT -m PROTGAMMALG -s $str.fasaln -n $PREFIX.$str -N autoMRE
 
+raxmlHPC-PTHREADS-AVX -T $CPU -f d -p 101 -# 100 -b 93 -o $OUT -m PROTGAMMALG -s $str.fasaln -n $PREFIX.${str}_BKL -N autoMRE
