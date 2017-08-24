@@ -1,13 +1,10 @@
 #!/usr/bin/bash
-#SBATCH --nodes 1 --ntasks 48 -p intel --time 5-0:0:0  --mem 24G
-
-#!/usr/bin/bash
 #SBATCH --nodes=1
 #SBATCH --ntasks=32
 #SBATCH --job-name=IQTREE
 #SBATCH --time=7-0:00:00
 #SBATCH --mem 64G
-#SBATCH --output=iqtree.%A_%a.out
+#SBATCH --output=iqtree.%A.out
 
 module load IQ-TREE
 
@@ -25,7 +22,7 @@ else
  PREFIX=ALL
  FINALPREF=1KFG
  OUT=Pult
- EXTRAIQTREE="-nt AUTO -m TESTMERGE -bb 1000 -bnni"
+ EXTRAIQTREE="-nt AUTO -m TESTMERGE -bb 1000"
 fi
 
 count=`wc -l expected | awk '{print $1}'`

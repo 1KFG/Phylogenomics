@@ -26,7 +26,7 @@ fi
 
 count=`wc -l expected | awk '{print $1}'`
 datestr=`date +%Y_%b_%d`
-str=$datestr".denovo.JGI1086".${count}sp
+str=$datestr.denovo.$HMM.${count}sp
 IN=all_${count}.denovo.$HMM
 if [ ! -f phylo/$str.fasaln ]; then
  cp $IN.fasaln phylo/$str.fasaln
@@ -36,4 +36,3 @@ fi
 cd phylo
 #raxmlHPC-PTHREADS-AVX -T $CPU -f a -x 227 -p 771 -o $OUT -m PROTGAMMAAUTO -s $str.fasaln -n $PREFIX.$str -N autoMRE
 raxmlHPC-PTHREADS-AVX -T $CPU -f a -x 227 -p 771 -o $OUT -m PROTGAMMALG -s $str.fasaln -n $PREFIX.$str -N autoMRE
-
