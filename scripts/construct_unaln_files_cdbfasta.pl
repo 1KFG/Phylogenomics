@@ -22,10 +22,12 @@ GetOptions(
     );
 $idxfile = File::Spec->catfile($dbdir,$idxfile);
 if( ! -f $idxfile ) {
- `cat $dbdir/*.$ext | perl -p -e 'if( /^>/ ) { s/>(\\S+).+/>\$1/' } else { s/\*//g }' | esl-reformat fasta - > $idxfile`;
+ `cat $dbdir/*.$ext | perl -p -e 'if( /^>/ ) { s/>(\\S+).+/>\$1/ } else { s/\\*//g }' | esl-reformat fasta - > $idxfile`;
+ if ( ! -f $idxfile ) {
+   die "could not create $idxfile for indexing all seqs";
+ }
  `cdbfasta $idxfile`;
 }
-
 opendir(BEST,$dir) || die "cannot open dir: $dir, $!";
 
 my %by_gene;
