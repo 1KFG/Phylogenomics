@@ -6,7 +6,7 @@
 #SBATCH --time=3:00:00
 #SBATCH --mem-per-cpu=2G
 #SBATCH --output=MSA.%A_%a.out
-#SBATCH -p batch
+#SBATCH -p intel
 
 module load trimal
 module load muscle
