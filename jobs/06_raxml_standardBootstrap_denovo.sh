@@ -4,7 +4,7 @@
 #SBATCH --job-name=raxmlAVX
 #SBATCH --time=7-0:00:00
 #SBATCH --mem-per-cpu=3G
-#SBATCH --output=raxmlAVX.%A_%a.out
+#SBATCH --output=raxmlAVX.%A.out
 
 module load RAxML
 
@@ -23,7 +23,7 @@ else
  OUT=Pult
  EXTRARAXML=
 fi
-
+mkdir -p $RUNFOLDER
 count=`wc -l expected | awk '{print $1}'`
 datestr=`date +%Y_%b_%d`
 str=$datestr.denovo.$HMM.${count}sp
