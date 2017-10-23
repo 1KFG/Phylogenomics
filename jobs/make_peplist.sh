@@ -1,3 +1,2 @@
 #!/usr/bin/bash
-cd pep
-ls *.aa.fasta > ../list
+for f in pep/*.aa.fasta ; do basename $f; done > list
