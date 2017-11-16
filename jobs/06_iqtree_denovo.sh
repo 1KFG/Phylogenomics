@@ -1,12 +1,12 @@
 #!/usr/bin/bash
 #SBATCH --nodes=1
 #SBATCH --ntasks=32
-#SBATCH --job-name=raxmlAVX
+#SBATCH --job-name=IQTREE_Denvo
 #SBATCH --time=7-0:00:00
-#SBATCH --mem=64G
-#SBATCH --output=raxmlAVX.%A.out
+#SBATCH --mem 64G
+#SBATCH --output=iqtree_denovo.%A.out
 
-module load RAxML
+module load IQ-TREE
 
 CPU=2
 
@@ -15,18 +15,20 @@ if [ $SLURM_CPUS_ON_NODE ]; then
  CPU=$SLURM_CPUS_ON_NODE
 fi
 
+ EXTRAIQTREE="-nt AUTO -m TESTMERGE -bb 1000"
+
 if [ -f config.txt ]; then
  source config.txt
 else
+ HMM=JGI_1086
  PREFIX=ALL
  FINALPREF=1KFG
  OUT=Pult
- EXTRARAXML=
 fi
-mkdir -p $RUNFOLDER
+
 count=`wc -l expected | awk '{print $1}'`
 datestr=`date +%Y_%b_%d`
-str=$datestr".denovo.$HMM".${count}sp
+str=$datestr.denovo.$HMM.${count}sp
 IN=all_${count}.denovo.$HMM
 if [ ! -f phylo/$str.fasaln ]; then
  cp $IN.fasaln phylo/$str.fasaln
@@ -34,5 +36,5 @@ if [ ! -f phylo/$str.fasaln ]; then
  cp $IN.phy phylo/$str.phy
 fi
 cd phylo
-#raxmlHPC-PTHREADS-AVX -T $CPU -f a -x 227 -p 771 -o $OUT -m PROTGAMMAAUTO -s $str.fasaln -n $PREFIX.$str -N autoMRE
-raxmlHPC-PTHREADS-AVX -T $CPU -f a -x 227 -p 771 -o $OUT -m PROTGAMMALG -s $str.fasaln -n $PREFIX.$str -N autoMRE
+
+iqtree-omp -s $str.fasaln -spp $str.partitions $EXTRAIQTREE 

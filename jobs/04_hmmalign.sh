@@ -5,6 +5,8 @@
 #SBATCH --time=3:00:00
 #SBATCH --mem-per-cpu=3G
 #SBATCH --output=hmmalign.%A_%a.out
+#SBATCH -p intel
+
 module load trimal
 module load hmmer/3
 module load java

@@ -1,12 +1,12 @@
 #!/usr/bin/bash
 #SBATCH --nodes=1
 #SBATCH --ntasks=32
-#SBATCH --job-name=raxmlAVX
+#SBATCH --job-name=IQTREE
 #SBATCH --time=7-0:00:00
 #SBATCH --mem 64G
-#SBATCH --output=raxmlAVXStandard.%A.out
+#SBATCH --output=iqtree.%A.out
 
-module load RAxML
+module load IQ-TREE
 
 CPU=2
 
@@ -18,22 +18,22 @@ fi
 if [ -f config.txt ]; then
  source config.txt
 else
+ HMM=JGI_1086
  PREFIX=ALL
  FINALPREF=1KFG
  OUT=Pult
- EXTRARAXML=
+ EXTRAIQTREE="-nt AUTO -m TESTMERGE -bb 1000"
 fi
 
-mkdir -p $RUNFOLDER
 count=`wc -l expected | awk '{print $1}'`
 datestr=`date +%Y_%b_%d`
-str=$PREFIX.$datestr.$HMM.${count}sp
+str=$datestr.$HMM.${count}sp
 IN=all_${count}.$HMM
 if [ ! -f phylo/$str.fasaln ]; then
- cp $IN.fasaln $RUNFOLDER/$str.fasaln
- cp $IN.partitions.txt $RUNFOLDER/$str.partitions
+ cp $IN.fasaln phylo/$str.fasaln
+ cp $IN.partitions.txt phylo/$str.partitions
+ cp $IN.phy phylo/$str.phy
 fi
 cd phylo
-PREFIX=Standard.$str
-raxmlHPC-PTHREADS-AVX -T $CPU -f a -x 227 -p 771 -o $OUT -m PROTGAMMAAUTO \
-  -s $str.fasaln -n $PREFIX -N autoMRE $EXTRARAXML
+
+iqtree-omp -s $str.fasaln -spp $str.partitions $EXTRAIQTREE 

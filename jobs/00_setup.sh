@@ -16,7 +16,11 @@ fi
 
 echo "make expected prefixes"
 bash jobs/make_expected_file.sh
-echo "making prefix.tab"
-perl scripts/make_prefixes_readdata.pl pep > prefix.tab
+if [ ! -f prefix.tab ]; then
+ echo "making prefix.tab"
+ perl scripts/make_prefixes_readdata.pl pep > prefix.tab
+else
+ echo "prefix.tab already exists, not updating"
+fi
 echo "makeing list file for hmmsearch runs"
 bash jobs/make_peplist.sh

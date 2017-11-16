@@ -1,10 +1,14 @@
 #!env perl
 use strict;
 use warnings;
+
+
 my $alistat = '/opt/linux/centos/7.x/x86_64/pkgs/hmmer/3.1b2/bin/esl-alistat';
 my $expected_list = shift || 'expected';
 my $aa_aln_dir = shift || 'aln/JGI_1086';
 my $trim_dir = shift || 'aln/JGI_1086';
+my $denovo = shift || 0;
+
 my %expected;
 open(my $fh => $expected_list ) || die $!;
 while(<$fh>) {
@@ -24,8 +28,10 @@ print $rpt1 join("\t", qw(OG), @names), "\n";
 print $rpt2 join("\t", qw(OG NUM_TAXA FULL_LEN TRIM_LEN FULL_PERC_ID TRIM_PERC_ID TRIM_RATIO)),
     "\n";
 for my $file (sort readdir(DIR) ) {
-    if( $file =~ /(\S+)\.msa\.trim$/ ) {
+    
+    if( $denovo ? $file =~ /(\S+)\.(denovo)\.trim$/ : $file =~ /(\S+)\.(msa)\.trim$/ ) {
 	my $stem = $1;
+        my $ext = $2;
 	open(my $run => "$alistat $trim_dir/$file |" ) || die $!;
 	while(<$run>) {
 	    if(/Alignment length:\s+(\d+)/ ) {
@@ -48,7 +54,11 @@ for my $file (sort readdir(DIR) ) {
 			 @names),"\n";
 			 
 	close($fh);
-	open($run => "$alistat $aa_aln_dir/$stem.msa |" ) || die $!;
+	if ( $denovo ) {
+	 open($run => "$alistat $aa_aln_dir/$stem.denovo.aln |" ) || die $!;
+        } else {
+	  open($run => "$alistat $aa_aln_dir/$stem.msa |") || die $!;
+        }
 	while(<$run>) {
 	    if(/Alignment length:\s+(\d+)/ ) {
 		$stats{$stem}->{full} = $1;

@@ -22,10 +22,12 @@ GetOptions(
     );
 $idxfile = File::Spec->catfile($dbdir,$idxfile);
 if( ! -f $idxfile ) {
- `cat $dbdir/*.$ext | esl-reformat fasta - > $idxfile`;
+ `cat $dbdir/*.$ext | perl -p -e 'if( /^>/ ) { s/>(\\S+).+/>\$1/ } else { s/\\*//g }' | esl-reformat fasta - > $idxfile`;
+ if ( ! -f $idxfile ) {
+   die "could not create $idxfile for indexing all seqs";
+ }
  `cdbfasta $idxfile`;
 }
-
 opendir(BEST,$dir) || die "cannot open dir: $dir, $!";
 
 my %by_gene;
@@ -53,18 +55,19 @@ for my $gene ( keys %by_gene ) {
     close(CDBYANK);
     my $nct = `grep -c '^>' $outdir/$gene.$ext`;
     if( $nct != $expected ) { 
+     warn("num seqs is $nct while expected $expected for $gene.$ext\n");
      my $seqcheck = Bio::SeqIO->new(-format => 'fasta', -file => "$outdir/$gene.$ext");
      my %seen;
      while (my $s = $seqcheck->next_seq ) {
       $seen{$s->display_id}++; 
-      warn("storing ",$s->display_id,"\n");
+      warn("stored ",$s->display_id,"\n");
      }
      for my $sp ( keys %{$by_gene{$gene}} ) {
-      my $name = $by_gene{$gene}->{$sp};
-      if( ! exists $seen{$name} ) {	
-	warn("cannot find '$name' in $gene file\n");
-	}
+       my $name = $by_gene{$gene}->{$sp};
+         if( ! exists $seen{$name} ) {	
+  	  warn("cannot find '$name' in $gene file\n");
+	 }
     }
-	exit;
+#	exit;
     }
 }

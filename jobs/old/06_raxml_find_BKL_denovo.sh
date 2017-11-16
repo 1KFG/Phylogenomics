@@ -1,10 +1,10 @@
 #!/usr/bin/bash
 #SBATCH --nodes=1
 #SBATCH --ntasks=32
-#SBATCH --job-name=raxmlAVX
+#SBATCH --job-name=raxml.BKL
 #SBATCH --time=7-0:00:00
-#SBATCH --mem 64G
-#SBATCH --output=raxmlAVXStandard.%A.out
+#SBATCH --mem-per-cpu=4G
+#SBATCH --output=raxmlBKL.%A_%a.out
 
 module load RAxML
 
@@ -24,16 +24,15 @@ else
  EXTRARAXML=
 fi
 
-mkdir -p $RUNFOLDER
 count=`wc -l expected | awk '{print $1}'`
 datestr=`date +%Y_%b_%d`
-str=$PREFIX.$datestr.$HMM.${count}sp
-IN=all_${count}.$HMM
+str=$datestr.denovo.$HMM.${count}sp
+IN=all_${count}.denovo.$HMM
 if [ ! -f phylo/$str.fasaln ]; then
- cp $IN.fasaln $RUNFOLDER/$str.fasaln
- cp $IN.partitions.txt $RUNFOLDER/$str.partitions
+ cp $IN.fasaln phylo/$str.fasaln
+ cp $IN.partitions.txt phylo/$str.partitions
+ cp $IN.phy phylo/$str.phy
 fi
 cd phylo
-PREFIX=Standard.$str
-raxmlHPC-PTHREADS-AVX -T $CPU -f a -x 227 -p 771 -o $OUT -m PROTGAMMAAUTO \
-  -s $str.fasaln -n $PREFIX -N autoMRE $EXTRARAXML
+
+raxmlHPC-PTHREADS-AVX -T $CPU -f d -p 101 -# 100 -b 93 -o $OUT -m PROTGAMMALG -s $str.fasaln -n $PREFIX.${str}_BKL -N autoMRE
