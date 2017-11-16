@@ -3,7 +3,7 @@
 #SBATCH --ntasks=32
 #SBATCH --job-name=raxmlAVX
 #SBATCH --time=7-0:00:00
-#SBATCH --mem-per-cpu=3G
+#SBATCH --mem=64G
 #SBATCH --output=raxmlAVX.%A_%a.out
 
 module load RAxML
@@ -26,7 +26,7 @@ fi
 
 count=`wc -l expected | awk '{print $1}'`
 datestr=`date +%Y_%b_%d`
-str=$datestr".denovo.JGI1086".${count}sp
+str=$datestr".denovo.$HMM".${count}sp
 IN=all_${count}.denovo.$HMM
 if [ ! -f phylo/$str.fasaln ]; then
  cp $IN.fasaln phylo/$str.fasaln
